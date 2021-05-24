@@ -10,6 +10,7 @@ public class StarGame extends ApplicationAdapter {
 
 	private SpriteBatch batch;
 	private Texture img;
+	private Texture background;
 	private TextureRegion region;
 
 	private int x;
@@ -18,6 +19,7 @@ public class StarGame extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
+		background = new Texture("background.jpg");
 		/* Для вырезания региона нужно указать картинку источник, указать начало координат
 		с которых начинается выделение региона относительно начала координат самой картинки
 		а не начала глобальных координат. Последние две цифры задают высоту и длину вырезвемого
@@ -30,11 +32,12 @@ public class StarGame extends ApplicationAdapter {
 		x++;
 		ScreenUtils.clear(1, 0, 0, 1);
 		batch.begin();
+		batch.draw(background, 0,0,1024,512);
 		batch.draw(img, x, 0);
 		/* Для отрисовки региона вызываем batch и указываем координаты начала отрисовки
 		и конечный размер картинки (по факту назначаем масштаб)
 		если последние две цифры не ставить то будет отрисован оригинальный размер. */
-		batch.draw(region, 300, 300, 150, 150);
+		batch.draw(region, 500, 300, 150, 150);
 		batch.end();
 	}
 	
