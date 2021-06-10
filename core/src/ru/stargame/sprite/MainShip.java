@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.stargame.base.Sprite;
 import ru.stargame.math.Rect;
+import ru.stargame.pool.BulletPool;
 
 public class MainShip extends Sprite {
 
@@ -24,11 +25,19 @@ public class MainShip extends Sprite {
     private int rightPointer = INVALID_POINTER;
 
     private  Rect worldBounds;
+    private BulletPool bulletPool;
+    private TextureRegion bulletRegion;
+    private Vector2 bulletV;
+    private Vector2 bulletPos;
 
 
 
-    public MainShip(TextureAtlas atlas) {
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
+        this.bulletPool = bulletPool;
+        this.bulletRegion = atlas.findRegion("bulletMainShip");
+        this.bulletV = new Vector2(0, 0.5f);
+        this.bulletPos = new Vector2();
     }
 
     @Override
@@ -95,6 +104,9 @@ public class MainShip extends Sprite {
                 pressedRight = true;
                 movieRight();
                 break;
+            case Input.Keys.UP:
+                shoot();
+                break;
         }
         return false;
     }
@@ -129,6 +141,12 @@ public class MainShip extends Sprite {
 
     private void stop(){
         v.setZero();
+    }
+
+    private void shoot(){
+        Bullet bullet = bulletPool.obtain();
+        bulletPos.set(pos.x, pos.y + getHalfHeight());
+        bullet.set(this, bulletRegion, bulletPos, bulletV, worldBounds, 1, 0.01f);
     }
 
 }
