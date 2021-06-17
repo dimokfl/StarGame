@@ -8,11 +8,15 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.List;
+
 import ru.stargame.base.BaseScreen;
 import ru.stargame.math.Rect;
 import ru.stargame.pool.BulletPool;
 import ru.stargame.pool.EnemyPool;
 import ru.stargame.sprite.Background;
+import ru.stargame.sprite.Bullet;
+import ru.stargame.sprite.EnemyShip;
 import ru.stargame.sprite.MainShip;
 import ru.stargame.sprite.Star;
 import ru.stargame.utils.EnemyEmitter;
@@ -61,6 +65,7 @@ public class GameScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         update(delta);
+        checkCollisions();
         freeAllDestroyed();
         draw();
     }
@@ -119,6 +124,34 @@ public class GameScreen extends BaseScreen {
         bulletPool.updateActiveSprites(delta);
         enemyPool.updateActiveSprites(delta);
         enemyEmitter.generate(delta);
+    }
+
+    private void checkCollisions(){
+        List<EnemyShip> enemyShipList = enemyPool.getActiveObject();
+        for (EnemyShip enemyShip : enemyShipList){
+            if (enemyShip.isDestroyed()){
+                continue;
+            }
+            float minDist = enemyShip.getHalfWidth() + mainShip.getHalfWidth();
+            if (enemyShip.pos.dst(mainShip.pos) < minDist){
+                enemyShip.destroy();
+            }
+        }
+        List<Bullet> bulletList = bulletPool.getActiveObject();
+        for (Bullet bullet : bulletList){
+            if (bullet.isDestroyed() || bullet.getOwner() != mainShip){
+                continue;
+            }
+            for (EnemyShip enemyShip : enemyShipList){
+                if (enemyShip.isDestroyed()){
+                    continue;
+                }
+                if (enemyShip.isBulletCollision(bullet)){
+                    enemyShip.destroy();
+                    bullet.destroy();
+                }
+            }
+        }
     }
 
     private void freeAllDestroyed(){
