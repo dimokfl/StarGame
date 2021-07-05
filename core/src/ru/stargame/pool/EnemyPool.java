@@ -9,10 +9,12 @@ import ru.stargame.sprite.EnemyShip;
 public class EnemyPool extends SpritesPool<EnemyShip> {
 
     private final Rect worldBound;
+    private final ExplosionPool explosionPool;
     private final BulletPool bulletPool;
     private final Sound bulletSound;
 
-    public EnemyPool(Rect worldBound, BulletPool bulletPool, Sound bulletSound) {
+    public EnemyPool(Rect worldBound, ExplosionPool explosionPool, BulletPool bulletPool, Sound bulletSound) {
+        this.explosionPool = explosionPool;
         this.worldBound = worldBound;
         this.bulletPool = bulletPool;
         this.bulletSound = bulletSound;
@@ -20,6 +22,6 @@ public class EnemyPool extends SpritesPool<EnemyShip> {
 
     @Override
     protected EnemyShip newObject() {
-        return new EnemyShip(worldBound, bulletPool,bulletSound);
+        return new EnemyShip(worldBound, explosionPool, bulletPool,bulletSound);
     }
 }
