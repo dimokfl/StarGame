@@ -49,6 +49,11 @@ public abstract class SpritesPool<T extends Sprite> {
         }
     }
 
+    public void freeAllActiveObjects() {
+        freeObject.addAll(activeObject);
+        activeObject.clear();
+    }
+
     public void dispose() {
         activeObject.clear();
         freeObject.clear();
